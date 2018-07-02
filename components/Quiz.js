@@ -12,12 +12,14 @@ class Quiz extends Component {
     counter: 1
   }
 
+  // Flips the question/answer quiz card
   flip = () => {
     this.setState((state) => ({
       flip: !state.flip
     })
   )}
 
+  // Updates the state when correct button is pressed
   correct = () => {
     this.setState((state) => ({
       correct: state.correct + 1,
@@ -25,7 +27,7 @@ class Quiz extends Component {
       flip: false
     }))
   }
-
+  // Updates the state when incorrect button is pressed
   incorrect = () => {
     this.setState((state) => ({
       counter: state.counter + 1,
@@ -33,6 +35,8 @@ class Quiz extends Component {
     }))
   }
 
+  // Calculates the percentage of correct answers
+  // Updates the notification when quiz is completed
   resultsPercent = () => {
     const {correct} = this.state;
     const {name} = this.props.navigation.state.params;
@@ -41,10 +45,10 @@ class Quiz extends Component {
     // Config notification
     clearLocalNotification()
       .then(setLocalNotification);
-
     return Math.round(100 * (correct / totalCards));
   }
 
+  // Restarts the quiz and ressets the state
   resetQuiz = () => {
     this.setState(() => ({
       correct: 0,
@@ -56,19 +60,23 @@ class Quiz extends Component {
   render() {
     const {name} = this.props.navigation.state.params;
     const deck = this.props.decks[name];
+    const {flip, correct, counter} = this.state;
 
-    if (this.state.counter > deck.questions.length) {
+    // When quiz questions end, show the result
+    if (counter > deck.questions.length) {
       const result = this.resultsPercent();
       return (
         <View style={styles.containerResult}>
           <Text style={styles.resultText}>Quiz Completed!</Text>
           <Text style={styles.result}>{result}%</Text>
-          <TouchableOpacity style={styles.resultButton}
+          <TouchableOpacity
+            style={styles.resultButton}
             onPress={() => this.resetQuiz()}
           >
             <Text style={styles.correctText}>Restart Quiz</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.resultButton}
+          <TouchableOpacity
+            style={styles.resultButton}
             onPress={() => this.props.navigation.goBack()}
           >
             <Text style={styles.correctText}>Back to Deck</Text>
@@ -79,24 +87,30 @@ class Quiz extends Component {
 
     return (
       <View style={styles.containerMain}>
-        <Text style={styles.counter}>{this.state.counter} / {deck.questions.length}</Text>
+        <Text style={styles.counter}>{counter} / {deck.questions.length}</Text>
 
-        {!this.state.flip && (
-          <TouchableOpacity style={styles.containerCard} onPress={() => this.flip()}>
+        {!flip && (
+          <TouchableOpacity
+            style={styles.containerCard}
+            onPress={() => this.flip()}
+          >
             <View style={styles.textContainer}>
-              <Text
-                style={styles.text}>{deck.questions[this.state.counter - 1].question}
+              <Text style={styles.text}>
+              {deck.questions[counter - 1].question}
               </Text>
             </View>
             <Text style={styles.flip}>tap card to show answer</Text>
           </TouchableOpacity>
         )}
 
-        {this.state.flip && (
-          <TouchableOpacity style={styles.containerCard} onPress={() => this.flip()}>
+        {flip && (
+          <TouchableOpacity
+            style={styles.containerCard}
+            onPress={() => this.flip()}
+          >
             <View style={styles.textContainer}>
-              <Text
-                style={styles.text}>{deck.questions[this.state.counter - 1].answer}
+              <Text style={styles.text}>
+              {deck.questions[counter - 1].answer}
               </Text>
             </View>
             <Text style={styles.flip}>tap card to show question</Text>
@@ -104,19 +118,20 @@ class Quiz extends Component {
         )}
 
         <View style={styles.containerBottom}>
-          <TouchableOpacity style={styles.correct}
-          onPress={() => this.correct()}
+          <TouchableOpacity 
+            style={styles.correct}
+            onPress={() => this.correct()}
           >
             <Text style={styles.correctText}>Correct</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.incorrect}
-          onPress={() => this.incorrect()}
+          <TouchableOpacity
+            style={styles.incorrect}
+            onPress={() => this.incorrect()}
           >
             <Text style={styles.correctText}>Incorrect</Text>
           </TouchableOpacity>
         </View>
-
       </View>
     );
   }

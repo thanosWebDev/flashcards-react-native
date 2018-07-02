@@ -7,22 +7,26 @@ import { deckRemove } from '../utils/api';
 
 class Deck extends Component {
 
+  // Set the current deck title
   componentDidMount () {
     const {title} = this.props.navigation.state.params;
     this.props.navigation.setParams({ name: title });
   }
 
+  //Removes a deck from asyncstorage and the store
   removeDeck = (title) => {
-    const { dispatch } = this.props;
+    const { dispatch, navigation } = this.props;
     dispatch(deleteDeck(title));
     deckRemove(title);
-    this.props.navigation.goBack();
+    navigation.goBack();
   }
 
   render() {
-    const {title} = this.props.navigation.state.params;
+    const {navigation} = this.props;
+    const {title} = navigation.state.params;
+    const {decks} = this.props;
 
-    if (!this.props.decks[title]) {
+    if (!decks[title]) {
       return (
         <View style={styles.containerDelete}>
           <Text style={styles.deleting}>Deleting...</Text>
@@ -30,7 +34,7 @@ class Deck extends Component {
       )
     }
 
-    const deck = this.props.decks[title];
+    const deck = decks[title];
     return (
       <View style={styles.containerMain}>
         <View style={styles.containerTop}>
@@ -38,8 +42,9 @@ class Deck extends Component {
           <Text style={styles.info}>{deck.questions.length} cards</Text>
         </View>
         <View style={styles.containerBottom}>
-          <TouchableOpacity style={styles.add}
-          onPress={() => this.props.navigation.navigate("NewQuestion", {name: deck.title})}
+          <TouchableOpacity 
+            style={styles.add}
+            onPress={() => navigation.navigate("NewQuestion", {name: deck.title})}
           >
             <Text style={styles.addText}>Add Card</Text>
           </TouchableOpacity>
@@ -47,12 +52,14 @@ class Deck extends Component {
           <TouchableOpacity
             disabled={deck.questions.length < 1 ? true : false}
             style={deck.questions.length < 1 ? styles.disabled : styles.start}
-            onPress={() => this.props.navigation.navigate("Quiz", {name: deck.title})}
+            onPress={() => navigation.navigate("Quiz", {name: deck.title})}
           >
             <Text style={styles.startText}>Start Quiz</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.delete}
-          onPress={() => this.removeDeck(deck.title)}
+
+          <TouchableOpacity
+            style={styles.delete}
+            onPress={() => this.removeDeck(deck.title)}
           >
             <Text style={styles.deleteText}>Delete Deck</Text>
           </TouchableOpacity>

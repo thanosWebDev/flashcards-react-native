@@ -12,9 +12,9 @@ import { white, blue, gray } from './utils/colors';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Constants } from 'expo';
 import NewQuestion from './components/NewQuestion';
-import { setLocalNotification } from './utils/helpers';
+import { setLocalNotification } from './utils/helpers'
 
-
+// Status bar
 function AppStatusBar ({backgroundColor, ...props}) {
   return (
     <View style={{ backgroundColor, height: Constants.statusBarHeight }}>
@@ -23,6 +23,7 @@ function AppStatusBar ({backgroundColor, ...props}) {
   )
 }
 
+// Tabs navigator
 const Tabs = createBottomTabNavigator({
   DeckList: {
     screen: DeckList,
@@ -59,6 +60,7 @@ const Tabs = createBottomTabNavigator({
   }
 })
 
+//Stack navigator 
 const MainNavigator = createStackNavigator({
   Home: {
     screen: Tabs,
@@ -119,9 +121,9 @@ const MainNavigator = createStackNavigator({
 
 export default class App extends React.Component {
 
+  // Set notification on app load
   componentDidMount() {
     setLocalNotification();
-    console.log("not1");
   }
 
   render() {

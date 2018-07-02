@@ -20,14 +20,18 @@ class NewQuestion extends Component {
     warning: false
   }
 
+  // Creates a new question/answer pair (card) for an existing deck
+  // It gets saved in asyncstorage and the sto store is being updated
   newCard = (title) => {
     const { warning: value, ...card } = this.state;
-    const { dispatch } = this.props;
-    if (this.state.question && this.state.answer) {
+    const { dispatch, navigation } = this.props;
+    const {question, answer} = this.state;
+    // Check if input fields are empty
+    if (question && answer) {
       addCardToDeck(title, card)
-      .then(() => dispatch(createCard(title, card)));
+        .then(() => dispatch(createCard(title, card)));
       this.setState(() => ({question: "", answer: "", warning: false }))
-      this.props.navigation.goBack();
+      navigation.goBack();
     } else {
       this.setState(() => ({warning: true}))
     }
@@ -41,36 +45,39 @@ class NewQuestion extends Component {
   }
 
   render() {
+    const {question, answer, warning} = this.state;
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container} enabled>
-        <Text style={styles.title}>Write{"\n"}question & answer{"\n"}for the new card</Text>
+        <Text style={styles.title}>
+        Write{"\n"}
+        question & answer{"\n"}
+        for the new card
+        </Text>
         <View style={styles.containerBottom}>
           <TextInput 
-            value={this.state.question}
+            value={question}
             style={styles.input}
             name="question"
             onChangeText={this.handleQuestionChange}
             placeholder={"Question"}
             placeholderTextColor={'#999'}
-          
           />
           <TextInput 
-            value={this.state.answer}
+            value={answer}
             style={styles.input}
             name="answer"
             onChangeText={this.handleAnswerChange}
             placeholder={"Answer"}
             placeholderTextColor={'#999'}
-          
           />
-          {this.state.warning && (
+          {warning && (
             <Text style={styles.warning}>Please fill both fields</Text>
           )}
           <TouchableOpacity
             style={styles.createButton}
             onPress={() => this.newCard(this.props.navigation.state.params.name)}
           >
-          <Text style={styles.text}>Submit</Text>
+            <Text style={styles.text}>Submit</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -130,7 +137,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   }
 });
-
-//export default CreateDeck
 
 export default connect()(NewQuestion)

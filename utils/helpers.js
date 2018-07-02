@@ -2,7 +2,7 @@ import { AsyncStorage } from 'react-native';
 import { DECKS_STORAGE_KEY } from './api';
 import { Notifications, Permissions } from 'expo';
 
-
+// Set dummy data on first load, for testing, when asyncstorage is empty
 export function setDummyData () {
   const decks = {
     React: {
@@ -32,22 +32,26 @@ export function setDummyData () {
   return decks
 }
 
+//If asyncstorage has data, format and load them or create dummy data
 export function formatDecks (results) {
-  console.log('list: ',results);
   return results === null
     ? setDummyData()
     : JSON.parse(results)
 }
 
 
-// Noticications
+// NOTOFICATIONS
+
+//Notification key for asyncstorage
 const NOTIFICATION_KEY = 'FlashCards:notification';
 
+//Clear notifications
 export function clearLocalNotification () {
   return AsyncStorage.removeItem(NOTIFICATION_KEY)
     .then(Notifications.cancelAllScheduledNotificationsAsync)
 }
 
+//Create a new notification item
 function createNotification () {
   return {
     title: 'Take a Quiz!',
@@ -64,6 +68,7 @@ function createNotification () {
   }
 }
 
+//Set local notification in a specific time using asyncstorage
 export function setLocalNotification () {
   AsyncStorage.getItem(NOTIFICATION_KEY)
     .then(JSON.parse)

@@ -20,42 +20,53 @@ class NewDeck extends Component {
     warning: false
   }
 
+  // Create a new deck in asyncstorage and updates the store
+  // Then show the new deck's screen
   newDeck = () => {
-    if (this.state.input) {
+    const {input} = this.state;
+    const {navigation} = this.props;
+
+    // Check if the input field is empty
+    if (input) {
       const { dispatch } = this.props;
-      const newDeck = saveDeckTitle(this.state.input);
+      const newDeck = saveDeckTitle(input);
       dispatch(createDeck(newDeck));
       this.setState(() => ({input: "", warning: false}));
-      this.props.navigation.replace("Home", {}, this.props.navigation.navigate('Deck', {title: this.state.input }))
-      //this.props.navigation.goBack();
+      navigation.replace("Home", {}, navigation.navigate('Deck', {title: input }))
     } else {
       this.setState(() => ({warning: true}));
     }
-    
   }
 
   handleTextChange = (input) => {
     this.setState(() => ({input}))
   }
 
-
   render() {
+    const {input, warning} = this.state;
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container} enabled>
-        <MaterialCommunityIcons style={styles.icon} name='cards' size={70} color={blue} />
-        <Text style={styles.title}>What is the title{"\n"}of your new deck?</Text>
+        <MaterialCommunityIcons
+          style={styles.icon}
+          name='cards'
+          size={70}
+          color={blue}
+        />
+        <Text style={styles.title}>
+        What is the title{"\n"}
+        of your new deck?
+        </Text>
         <View style={styles.containerBottom}>
           <TextInput 
-            value={this.state.input}
+            value={input}
             style={styles.input}
             onChangeText={this.handleTextChange}
             placeholder={"Awsome title"}
             placeholderTextColor={'#999'}
           />
-          {this.state.warning && (
+          {warning && (
             <Text style={styles.warning}>Please write a title</Text>
           )}
-          
           <TouchableOpacity
             style={styles.createButton}
             onPress={() => this.newDeck()}
