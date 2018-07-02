@@ -9,7 +9,7 @@ The app was created with create-react-native-app and can be tested in an android
 
 ## How to run the App
 
-The app has been tested with android 7.1 and iOS 11. Always using the Expo.io app withing an android phone or android/iOS emulators.
+The app has been tested with android 7.1 and iOS 11. Always using the Expo.io app within an android phone or android/iOS emulators.
 
 To run the app locally first make sure you have yarn & node installed, then follow this steps:
 
